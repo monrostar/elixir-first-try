@@ -30,7 +30,7 @@ end
 
 defmodule CodeGenerator do
   def generate(%{:count => count, :group_id => group_id}) when count > 0 and group_id > 0 do
-    pc_map = gen_code(%{}, group_id, count)
+    pc_map = gen_code(group_id, count)
   end
 
   def generate(%{:custom => name, :group_id => group_id})
@@ -38,15 +38,12 @@ defmodule CodeGenerator do
     combine_code_in_map(name, group_id)
   end
 
-  defp gen_code(accumulator, group_id, n) when is_map(accumulator) and n >= 1 and group_id >= 1 do
-    Randomizer.randomize_string(34)
-    |> combine_code_in_map(group_id)
-    |> Map.merge(accumulator)
-    |> gen_code(group_id, n - 1)
-  end
-
-  defp gen_code(accumulator, group_id, n) when n < 1 do
-    accumulator
+  defp gen_code(group_id, n) when is_map(accumulator) and n >= 1 and group_id >= 1 do
+    Enum.reduce(1..n, accumulator, fn _, acc ->
+      Randomizer.randomize_string(34)
+      |> combine_code_in_map(group_id)
+      |> Map.merge(acc)
+    end)
   end
 
   defp combine_code_in_map(code, group_id) when is_binary(code) when group_id > 0 do
