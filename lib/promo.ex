@@ -39,7 +39,7 @@ defmodule CodeGenerator do
   end
 
   defp gen_code(group_id, n) when is_map(accumulator) and n >= 1 and group_id >= 1 do
-    Enum.reduce(1..n, accumulator, fn _, acc ->
+    Enum.reduce(1..n, %{}, fn _, acc ->
       Randomizer.randomize_string(34)
       |> combine_code_in_map(group_id)
       |> Map.merge(acc)
